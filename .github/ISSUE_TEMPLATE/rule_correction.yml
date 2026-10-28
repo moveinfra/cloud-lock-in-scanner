@@ -1,0 +1,33 @@
+name: Rule correction or missing service
+description: A service is missed, reported as unknown, or has the wrong class or replacement
+labels: [rules]
+body:
+  - type: dropdown
+    id: cloud
+    attributes:
+      label: Cloud
+      options: [AWS, Google Cloud, Azure, DigitalOcean, Other]
+    validations:
+      required: true
+  - type: input
+    id: names
+    attributes:
+      label: Service and the names that should match
+      description: Terraform type, CloudFormation type or SDK package
+      placeholder: "Amazon Timestream: aws_timestreamwrite_table, AWS::Timestream::Table, @aws-sdk/client-timestream-write"
+    validations:
+      required: true
+  - type: dropdown
+    id: change
+    attributes:
+      label: What should change
+      options: [Missing service, Wrong class, Better EU replacement, Wrong match]
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: For a class or replacement change, what the move involves. Link the provider documentation.
+    validations:
+      required: true

@@ -1,0 +1,3 @@
+# The scanner's own fixtures and rule data mention every cloud service on purpose.
+testdata/
+internal/

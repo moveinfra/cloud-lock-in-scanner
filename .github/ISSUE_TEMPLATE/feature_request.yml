@@ -1,0 +1,21 @@
+name: Feature request
+description: A new detector, language, output or option
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: The situation and the decision you want the report to help with.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help?
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Fits the ground rules
+      options:
+        - label: Works statically and offline (reads files, no cloud or network access)

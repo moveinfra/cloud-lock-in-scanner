@@ -1,0 +1,1053 @@
+{
+  "schema_version": 1,
+  "rules": [
+    {
+      "id": "aws.network-iam",
+      "group": true,
+      "cloud": "aws",
+      "service": "Networking & IAM",
+      "class": "portable",
+      "capability": "networking",
+      "replacement": "UpCloud SDN private networks, Scaleway VPC and Private Networks, Hetzner Networks and Firewalls, OVHcloud vRack private networks; IAM becomes API tokens and RBAC",
+      "terraform": ["aws_iam_*", "aws_vpc", "aws_vpc_*", "aws_vpcs", "aws_subnet", "aws_subnets", "aws_default_*", "aws_security_group", "aws_security_group_rule", "aws_security_groups", "aws_route", "aws_route_table", "aws_route_table_association", "aws_main_route_table_association", "aws_internet_gateway", "aws_internet_gateway_attachment", "aws_egress_only_internet_gateway", "aws_nat_gateway", "aws_eip", "aws_eip_association", "aws_network_acl", "aws_network_acl_*", "aws_network_interface", "aws_network_interface_*", "aws_ec2_transit_gateway*", "aws_vpn_*", "aws_customer_gateway", "aws_flow_log", "aws_key_pair", "aws_caller_identity", "aws_region", "aws_regions", "aws_partition", "aws_availability_zone", "aws_availability_zones", "aws_organizations_*", "aws_ssoadmin_*", "aws_identitystore_*"],
+      "cloudformation": ["AWS::IAM::*", "AWS::EC2::VPC*", "AWS::EC2::Subnet*", "AWS::EC2::SecurityGroup*", "AWS::EC2::Route*", "AWS::EC2::InternetGateway", "AWS::EC2::EgressOnlyInternetGateway", "AWS::EC2::NatGateway", "AWS::EC2::EIP*", "AWS::EC2::NetworkAcl*", "AWS::EC2::NetworkInterface*", "AWS::EC2::TransitGateway*", "AWS::EC2::VPNGateway*", "AWS::EC2::CustomerGateway", "AWS::EC2::FlowLog", "AWS::EC2::KeyPair", "AWS::CloudFormation::*", "AWS::CDK::Metadata", "AWS::Organizations::*", "AWS::SSO::*"],
+      "sdk": ["iam", "sts", "sso*", "organizations", "identitystore", "cloudformation"]
+    },
+    {
+      "id": "aws.ec2",
+      "cloud": "aws",
+      "service": "EC2 / Lightsail",
+      "class": "portable",
+      "capability": "compute",
+      "replacement": "UpCloud Cloud Servers, Scaleway Instances, Hetzner Cloud Servers, OVHcloud Public Cloud Instances",
+      "terraform": ["aws_instance", "aws_instances", "aws_launch_template", "aws_launch_configuration", "aws_autoscaling_*", "aws_ami", "aws_ami_*", "aws_ebs_*", "aws_volume_attachment", "aws_placement_group", "aws_spot_*", "aws_ec2_*", "aws_lightsail_*"],
+      "cloudformation": ["AWS::EC2::*", "AWS::AutoScaling::*", "AWS::Lightsail::*"],
+      "sdk": ["ec2", "autoscaling", "ebs", "lightsail"]
+    },
+    {
+      "id": "aws.s3",
+      "cloud": "aws",
+      "service": "S3",
+      "class": "portable",
+      "capability": "object-storage",
+      "replacement": "UpCloud Managed Object Storage, Scaleway Object Storage, Hetzner Object Storage, OVHcloud Object Storage (S3 API)",
+      "terraform": ["aws_s3_*", "aws_s3control_*"],
+      "cloudformation": ["AWS::S3::*"],
+      "sdk": ["s3*"]
+    },
+    {
+      "id": "aws.rds",
+      "cloud": "aws",
+      "service": "RDS / Aurora (provisioned)",
+      "class": "portable",
+      "capability": "managed-postgres",
+      "replacement": "UpCloud Managed PostgreSQL / MySQL, Scaleway Managed Database for PostgreSQL / MySQL, OVHcloud Managed Databases for PostgreSQL / MySQL, or PostgreSQL / MySQL on Hetzner Cloud Servers",
+      "terraform": ["aws_db_*", "aws_rds_*"],
+      "cloudformation": ["AWS::RDS::*"],
+      "sdk": ["rds*"]
+    },
+    {
+      "id": "aws.aurora-serverless",
+      "cloud": "aws",
+      "service": "Aurora Serverless / RDS Data API",
+      "class": "hard",
+      "capability": "managed-postgres",
+      "replacement": "A fixed-size managed PostgreSQL / MySQL (UpCloud, Scaleway, OVHcloud); Data API calls need a normal driver and connection pool",
+      "terraform": ["aws_rds_cluster", "aws_rds_cluster_instance"],
+      "terraform_body": ["engine_mode\\s*=\\s*\"serverless\"", "serverlessv2_scaling_configuration", "enable_http_endpoint\\s*=\\s*true", "instance_class\\s*=\\s*\"db\\.serverless\""],
+      "sdk": ["rdsdata"]
+    },
+    {
+      "id": "aws.elasticache",
+      "cloud": "aws",
+      "service": "ElastiCache / MemoryDB",
+      "class": "portable",
+      "capability": "redis",
+      "replacement": "UpCloud Managed Valkey, Scaleway Managed Redis, OVHcloud Managed Databases for Caching, or Valkey on Hetzner Cloud Servers",
+      "terraform": ["aws_elasticache_*", "aws_memorydb_*"],
+      "cloudformation": ["AWS::ElastiCache::*", "AWS::MemoryDB::*"],
+      "sdk": ["elasticache", "memorydb"]
+    },
+    {
+      "id": "aws.eks",
+      "cloud": "aws",
+      "service": "EKS",
+      "class": "portable",
+      "capability": "kubernetes",
+      "replacement": "UpCloud Managed Kubernetes, Scaleway Kubernetes Kapsule, OVHcloud Managed Kubernetes Service, or self-managed Kubernetes on Hetzner Cloud Servers",
+      "terraform": ["aws_eks_*"],
+      "cloudformation": ["AWS::EKS::*"],
+      "sdk": ["eks"]
+    },
+    {
+      "id": "aws.elb",
+      "cloud": "aws",
+      "service": "Elastic Load Balancing (ALB, NLB)",
+      "class": "portable",
+      "capability": "load-balancer",
+      "replacement": "UpCloud Managed Load Balancer, Scaleway Load Balancer, Hetzner Load Balancer, OVHcloud Public Cloud Load Balancer",
+      "terraform": ["aws_lb", "aws_lb_*", "aws_alb", "aws_alb_*", "aws_elb", "aws_elb_*", "aws_load_balancer_*", "aws_proxy_protocol_policy"],
+      "cloudformation": ["AWS::ElasticLoadBalancing::*", "AWS::ElasticLoadBalancingV2::*"],
+      "sdk": ["elasticloadbalancing*", "elb*"]
+    },
+    {
+      "id": "aws.route53",
+      "cloud": "aws",
+      "service": "Route 53",
+      "class": "portable",
+      "capability": "dns",
+      "replacement": "Scaleway Domains and DNS, Hetzner DNS, OVHcloud DNS, or another EU DNS provider; zone export and import",
+      "terraform": ["aws_route53_*"],
+      "cloudformation": ["AWS::Route53::*", "AWS::Route53Resolver::*"],
+      "sdk": ["route53*"]
+    },
+    {
+      "id": "aws.ecr",
+      "cloud": "aws",
+      "service": "ECR",
+      "class": "portable",
+      "replacement": "Any OCI registry: Harbor, or the target cloud's container registry",
+      "terraform": ["aws_ecr_*", "aws_ecrpublic_*"],
+      "cloudformation": ["AWS::ECR::*"],
+      "sdk": ["ecr*"]
+    },
+    {
+      "id": "aws.efs",
+      "cloud": "aws",
+      "service": "EFS / FSx",
+      "class": "portable",
+      "replacement": "NFS on servers, or the target cloud's file storage",
+      "terraform": ["aws_efs_*", "aws_fsx_*"],
+      "cloudformation": ["AWS::EFS::*", "AWS::FSx::*"],
+      "sdk": ["efs", "fsx"]
+    },
+    {
+      "id": "aws.opensearch",
+      "cloud": "aws",
+      "service": "OpenSearch Service",
+      "class": "portable",
+      "replacement": "OpenSearch you run on servers or Kubernetes, or a managed OpenSearch on the target cloud",
+      "terraform": ["aws_opensearch_*", "aws_opensearchserverless_*", "aws_elasticsearch_*"],
+      "cloudformation": ["AWS::OpenSearchService::*", "AWS::OpenSearchServerless::*", "AWS::Elasticsearch::*"],
+      "sdk": ["opensearch*", "elasticsearch*", "es"]
+    },
+    {
+      "id": "aws.mq",
+      "cloud": "aws",
+      "service": "Amazon MQ",
+      "class": "portable",
+      "capability": "queues",
+      "replacement": "RabbitMQ or ActiveMQ on servers; OVHcloud Managed Kafka or RabbitMQ on servers",
+      "terraform": ["aws_mq_*"],
+      "cloudformation": ["AWS::AmazonMQ::*"],
+      "sdk": ["mq", "amazonmq"]
+    },
+    {
+      "id": "aws.msk",
+      "cloud": "aws",
+      "service": "MSK (Kafka)",
+      "class": "portable",
+      "capability": "queues",
+      "replacement": "Kafka: OVHcloud Managed Kafka, or Kafka / Redpanda you run",
+      "terraform": ["aws_msk_*", "aws_mskconnect_*"],
+      "cloudformation": ["AWS::MSK::*", "AWS::KafkaConnect::*"],
+      "sdk": ["kafka", "kafkaconnect", "msk"]
+    },
+    {
+      "id": "aws.acm",
+      "cloud": "aws",
+      "service": "Certificate Manager",
+      "class": "portable",
+      "replacement": "Let's Encrypt via cert-manager, or certificates on the target load balancer",
+      "terraform": ["aws_acm_*", "aws_acmpca_*"],
+      "cloudformation": ["AWS::CertificateManager::*", "AWS::ACMPCA::*"],
+      "sdk": ["acm*", "certificatemanager"]
+    },
+    {
+      "id": "aws.ecs",
+      "cloud": "aws",
+      "service": "ECS / Fargate",
+      "class": "moderate",
+      "capability": "kubernetes",
+      "replacement": "Kubernetes on the target (UpCloud Managed Kubernetes, Scaleway Kubernetes Kapsule, OVHcloud Managed Kubernetes Service); task definitions become Deployments",
+      "terraform": ["aws_ecs_*", "aws_appautoscaling_*"],
+      "cloudformation": ["AWS::ECS::*", "AWS::ApplicationAutoScaling::*"],
+      "sdk": ["ecs*", "applicationautoscaling"]
+    },
+    {
+      "id": "aws.beanstalk",
+      "cloud": "aws",
+      "service": "Elastic Beanstalk / App Runner",
+      "class": "moderate",
+      "replacement": "Containers on Kubernetes or on servers; platform configuration needs rewriting",
+      "terraform": ["aws_elastic_beanstalk_*", "aws_apprunner_*"],
+      "cloudformation": ["AWS::ElasticBeanstalk::*", "AWS::AppRunner::*"],
+      "sdk": ["elasticbeanstalk", "apprunner*"]
+    },
+    {
+      "id": "aws.sqs",
+      "cloud": "aws",
+      "service": "SQS",
+      "class": "moderate",
+      "capability": "queues",
+      "replacement": "Scaleway Queues and Topics (SQS/SNS-compatible), or NATS / RabbitMQ on servers",
+      "terraform": ["aws_sqs_*"],
+      "cloudformation": ["AWS::SQS::*"],
+      "sdk": ["sqs"]
+    },
+    {
+      "id": "aws.sns",
+      "cloud": "aws",
+      "service": "SNS",
+      "class": "moderate",
+      "capability": "queues",
+      "replacement": "Scaleway Queues and Topics (SQS/SNS-compatible), or NATS / RabbitMQ on servers",
+      "terraform": ["aws_sns_*"],
+      "cloudformation": ["AWS::SNS::*"],
+      "sdk": ["sns*"]
+    },
+    {
+      "id": "aws.eventbridge",
+      "cloud": "aws",
+      "service": "EventBridge / Scheduler",
+      "class": "moderate",
+      "capability": "queues",
+      "replacement": "NATS or RabbitMQ for events, Kubernetes CronJobs for schedules",
+      "terraform": ["aws_cloudwatch_event_*", "aws_scheduler_*", "aws_pipes_*", "aws_schemas_*"],
+      "cloudformation": ["AWS::Events::*", "AWS::Scheduler::*", "AWS::Pipes::*", "AWS::EventSchemas::*"],
+      "sdk": ["eventbridge", "events*", "cloudwatchevents", "scheduler", "pipes", "schemas"]
+    },
+    {
+      "id": "aws.secrets",
+      "cloud": "aws",
+      "service": "Secrets Manager / Systems Manager",
+      "class": "moderate",
+      "replacement": "OpenBao or HashiCorp Vault, or Kubernetes Secrets with External Secrets or SOPS",
+      "terraform": ["aws_secretsmanager_*", "aws_ssm_*"],
+      "cloudformation": ["AWS::SecretsManager::*", "AWS::SSM::*"],
+      "sdk": ["secretsmanager", "ssm"]
+    },
+    {
+      "id": "aws.kms",
+      "cloud": "aws",
+      "service": "KMS",
+      "class": "moderate",
+      "replacement": "OpenBao or Vault Transit, or the target cloud's key management; data encrypted with KMS keys must be re-encrypted",
+      "terraform": ["aws_kms_*"],
+      "cloudformation": ["AWS::KMS::*"],
+      "sdk": ["kms"]
+    },
+    {
+      "id": "aws.cloudfront",
+      "cloud": "aws",
+      "service": "CloudFront",
+      "class": "moderate",
+      "replacement": "An EU CDN or a caching proxy (Varnish, NGINX); CloudFront Functions and Lambda@Edge need a rewrite",
+      "terraform": ["aws_cloudfront_*"],
+      "cloudformation": ["AWS::CloudFront::*"],
+      "sdk": ["cloudfront*"]
+    },
+    {
+      "id": "aws.waf",
+      "cloud": "aws",
+      "service": "WAF / Shield",
+      "class": "moderate",
+      "replacement": "A WAF in the ingress (Coraza, ModSecurity) or at an EU edge provider; rules need rewriting",
+      "terraform": ["aws_waf_*", "aws_wafv2_*", "aws_wafregional_*", "aws_shield_*"],
+      "cloudformation": ["AWS::WAF::*", "AWS::WAFv2::*", "AWS::WAFRegional::*", "AWS::Shield::*"],
+      "sdk": ["waf*", "shield"]
+    },
+    {
+      "id": "aws.cloudwatch",
+      "cloud": "aws",
+      "service": "CloudWatch / X-Ray",
+      "class": "moderate",
+      "replacement": "Prometheus, Grafana and Loki, or OpenTelemetry to any backend",
+      "terraform": ["aws_cloudwatch_*", "aws_xray_*"],
+      "cloudformation": ["AWS::CloudWatch::*", "AWS::Logs::*", "AWS::XRay::*"],
+      "sdk": ["cloudwatch*", "logs*", "xray"]
+    },
+    {
+      "id": "aws.audit",
+      "cloud": "aws",
+      "service": "CloudTrail / Config / GuardDuty / Security Hub",
+      "class": "moderate",
+      "replacement": "Audit logs from the target cloud's API, Falco, and a SIEM you run",
+      "terraform": ["aws_cloudtrail*", "aws_config_*", "aws_guardduty_*", "aws_securityhub_*", "aws_inspector*", "aws_macie2_*", "aws_accessanalyzer_*"],
+      "cloudformation": ["AWS::CloudTrail::*", "AWS::Config::*", "AWS::GuardDuty::*", "AWS::SecurityHub::*", "AWS::Inspector*", "AWS::Macie::*", "AWS::AccessAnalyzer::*"],
+      "sdk": ["cloudtrail", "config", "configservice", "guardduty", "securityhub", "inspector*", "macie*", "accessanalyzer"]
+    },
+    {
+      "id": "aws.backup",
+      "cloud": "aws",
+      "service": "AWS Backup",
+      "class": "moderate",
+      "replacement": "Velero, restic, or the target cloud's snapshots and backups",
+      "terraform": ["aws_backup_*"],
+      "cloudformation": ["AWS::Backup::*"],
+      "sdk": ["backup"]
+    },
+    {
+      "id": "aws.cognito",
+      "cloud": "aws",
+      "service": "Cognito",
+      "class": "moderate",
+      "replacement": "Keycloak or another OIDC provider; password hashes cannot be exported, so plan a migration on login",
+      "terraform": ["aws_cognito_*"],
+      "cloudformation": ["AWS::Cognito::*"],
+      "sdk": ["cognito*"]
+    },
+    {
+      "id": "aws.ses",
+      "cloud": "aws",
+      "service": "SES",
+      "class": "moderate",
+      "replacement": "An EU SMTP or transactional email provider; templates and bounce handling need porting",
+      "terraform": ["aws_ses_*", "aws_sesv2_*"],
+      "cloudformation": ["AWS::SES::*"],
+      "sdk": ["ses*", "pinpoint*"]
+    },
+    {
+      "id": "aws.apigateway",
+      "cloud": "aws",
+      "service": "API Gateway",
+      "class": "moderate",
+      "replacement": "An ingress controller or API gateway on Kubernetes (Traefik, Kong, NGINX); authorizers and mappings need rewriting",
+      "terraform": ["aws_api_gateway_*", "aws_apigatewayv2_*"],
+      "cloudformation": ["AWS::ApiGateway::*", "AWS::ApiGatewayV2::*", "AWS::Serverless::Api", "AWS::Serverless::HttpApi"],
+      "sdk": ["apigateway*"]
+    },
+    {
+      "id": "aws.codebuild",
+      "cloud": "aws",
+      "service": "CodeBuild / CodePipeline / CodeDeploy",
+      "class": "moderate",
+      "replacement": "GitHub Actions, GitLab CI or Forgejo Actions with self-hosted runners",
+      "terraform": ["aws_codebuild_*", "aws_codepipeline*", "aws_codedeploy_*", "aws_codecommit_*", "aws_codeartifact_*", "aws_codestarconnections_*"],
+      "cloudformation": ["AWS::CodeBuild::*", "AWS::CodePipeline::*", "AWS::CodeDeploy::*", "AWS::CodeCommit::*", "AWS::CodeArtifact::*"],
+      "sdk": ["codebuild", "codepipeline*", "codedeploy", "codecommit", "codeartifact"]
+    },
+    {
+      "id": "aws.analytics",
+      "cloud": "aws",
+      "service": "Athena / Glue / EMR",
+      "class": "moderate",
+      "replacement": "Trino or Spark over S3-compatible storage; Glue jobs and the Data Catalog need porting",
+      "terraform": ["aws_athena_*", "aws_glue_*", "aws_emr*", "aws_lakeformation_*"],
+      "cloudformation": ["AWS::Athena::*", "AWS::Glue::*", "AWS::EMR::*", "AWS::EMRServerless::*", "AWS::LakeFormation::*"],
+      "sdk": ["athena", "glue", "emr*", "lakeformation"]
+    },
+    {
+      "id": "aws.documentdb",
+      "cloud": "aws",
+      "service": "DocumentDB",
+      "class": "moderate",
+      "replacement": "MongoDB you run, or FerretDB on PostgreSQL; check for DocumentDB-only behaviour",
+      "terraform": ["aws_docdb_*", "aws_docdbelastic_*"],
+      "cloudformation": ["AWS::DocDB::*", "AWS::DocDBElastic::*"],
+      "sdk": ["docdb*"]
+    },
+    {
+      "id": "aws.iot",
+      "cloud": "aws",
+      "service": "IoT Core",
+      "class": "moderate",
+      "replacement": "An MQTT broker you run (EMQX, Mosquitto); device shadows, rules and provisioning need a rewrite",
+      "terraform": ["aws_iot_*"],
+      "cloudformation": ["AWS::IoT::*"],
+      "sdk": ["iot*"]
+    },
+    {
+      "id": "aws.lambda",
+      "cloud": "aws",
+      "service": "Lambda",
+      "class": "hard",
+      "capability": "functions",
+      "replacement": "Containers on Kubernetes, or Scaleway Serverless Functions / Containers; handlers and triggers need repackaging",
+      "terraform": ["aws_lambda_*"],
+      "cloudformation": ["AWS::Lambda::*", "AWS::Serverless::Function", "AWS::Serverless::LayerVersion", "AWS::Serverless::Application"],
+      "sdk": ["lambda*", "sam"]
+    },
+    {
+      "id": "aws.stepfunctions",
+      "cloud": "aws",
+      "service": "Step Functions",
+      "class": "hard",
+      "replacement": "A workflow engine such as Temporal or Argo Workflows; state machines need a rewrite",
+      "terraform": ["aws_sfn_*"],
+      "cloudformation": ["AWS::StepFunctions::*", "AWS::Serverless::StateMachine"],
+      "sdk": ["sfn", "stepfunctions*"]
+    },
+    {
+      "id": "aws.dynamodb",
+      "cloud": "aws",
+      "service": "DynamoDB",
+      "class": "hard",
+      "capability": "nosql",
+      "replacement": "No direct equivalent. Redesign on PostgreSQL (JSONB), or run ScyllaDB, which has a DynamoDB-compatible API",
+      "terraform": ["aws_dynamodb_*"],
+      "cloudformation": ["AWS::DynamoDB::*", "AWS::Serverless::SimpleTable"],
+      "sdk": ["dynamodb*", "dax"]
+    },
+    {
+      "id": "aws.kinesis",
+      "cloud": "aws",
+      "service": "Kinesis / Firehose",
+      "class": "hard",
+      "capability": "queues",
+      "replacement": "Kafka or Redpanda; producers and consumers need porting from the Kinesis client",
+      "terraform": ["aws_kinesis_*", "aws_kinesisanalyticsv2_*"],
+      "cloudformation": ["AWS::Kinesis::*", "AWS::KinesisFirehose::*", "AWS::KinesisAnalytics*"],
+      "sdk": ["kinesis*", "firehose"]
+    },
+    {
+      "id": "aws.appsync",
+      "cloud": "aws",
+      "service": "AppSync",
+      "class": "hard",
+      "replacement": "A GraphQL server you run (Apollo, Hasura); resolvers need a rewrite",
+      "terraform": ["aws_appsync_*"],
+      "cloudformation": ["AWS::AppSync::*"],
+      "sdk": ["appsync"]
+    },
+    {
+      "id": "aws.bedrock",
+      "cloud": "aws",
+      "service": "Bedrock",
+      "class": "hard",
+      "replacement": "An EU-hosted model API or open-weight models you serve (vLLM); prompts, agents and knowledge bases need porting",
+      "terraform": ["aws_bedrock*"],
+      "cloudformation": ["AWS::Bedrock::*"],
+      "sdk": ["bedrock*"]
+    },
+    {
+      "id": "aws.sagemaker",
+      "cloud": "aws",
+      "service": "SageMaker",
+      "class": "hard",
+      "replacement": "Jupyter, MLflow and GPU nodes on Kubernetes; pipelines and endpoints need a rewrite",
+      "terraform": ["aws_sagemaker_*"],
+      "cloudformation": ["AWS::SageMaker::*"],
+      "sdk": ["sagemaker*"]
+    },
+    {
+      "id": "aws.ai-apis",
+      "cloud": "aws",
+      "service": "AI APIs (Rekognition, Textract, Comprehend, Polly, Transcribe, Translate, Lex)",
+      "class": "hard",
+      "replacement": "Open-source models you serve, or EU AI APIs; output formats differ",
+      "terraform": ["aws_rekognition_*", "aws_comprehend_*", "aws_transcribe_*", "aws_lex*"],
+      "cloudformation": ["AWS::Rekognition::*", "AWS::Comprehend::*", "AWS::Transcribe::*", "AWS::Lex::*"],
+      "sdk": ["rekognition", "textract", "comprehend*", "polly", "transcribe*", "translate", "lex*"]
+    },
+    {
+      "id": "aws.redshift",
+      "cloud": "aws",
+      "service": "Redshift",
+      "class": "hard",
+      "capability": "warehouse",
+      "replacement": "No direct equivalent. A warehouse you run (e.g. ClickHouse); SQL dialect and loaders need porting",
+      "terraform": ["aws_redshift_*", "aws_redshiftserverless_*"],
+      "cloudformation": ["AWS::Redshift::*", "AWS::RedshiftServerless::*"],
+      "sdk": ["redshift*"]
+    },
+
+    {
+      "id": "gcp.network-iam",
+      "group": true,
+      "cloud": "gcp",
+      "service": "Networking & IAM",
+      "class": "portable",
+      "capability": "networking",
+      "replacement": "UpCloud SDN private networks, Scaleway VPC and Private Networks, Hetzner Networks and Firewalls, OVHcloud vRack private networks; IAM becomes API tokens and RBAC",
+      "terraform": ["google_compute_network", "google_compute_network_*", "google_compute_networks", "google_compute_subnetwork", "google_compute_subnetwork_*", "google_compute_firewall", "google_compute_firewall_*", "google_compute_router", "google_compute_router_*", "google_compute_route", "google_compute_address", "google_compute_global_address", "google_compute_vpn_*", "google_compute_ha_vpn_gateway", "google_compute_external_vpn_gateway", "google_compute_shared_vpc_*", "google_compute_zones", "google_compute_regions", "google_vpc_access_connector", "google_service_networking_connection", "google_project", "google_project_*", "google_projects", "google_folder", "google_folder_*", "google_organization", "google_organization_*", "google_service_account", "google_service_account_*", "google_client_config", "google_client_openid_userinfo", "google_billing_*", "google_iam_*"],
+      "sdk": ["iam*", "resourcemanager*", "core", "common", "promisify", "paginator", "projectify", "precisedate", "computemetadata", "localauth", "serviceusage"]
+    },
+    {
+      "id": "gcp.compute",
+      "cloud": "gcp",
+      "service": "Compute Engine",
+      "class": "portable",
+      "capability": "compute",
+      "replacement": "UpCloud Cloud Servers, Scaleway Instances, Hetzner Cloud Servers, OVHcloud Public Cloud Instances",
+      "terraform": ["google_compute_*"],
+      "sdk": ["compute*"]
+    },
+    {
+      "id": "gcp.lb",
+      "cloud": "gcp",
+      "service": "Cloud Load Balancing",
+      "class": "portable",
+      "capability": "load-balancer",
+      "replacement": "UpCloud Managed Load Balancer, Scaleway Load Balancer, Hetzner Load Balancer, OVHcloud Public Cloud Load Balancer",
+      "terraform": ["google_compute_forwarding_rule", "google_compute_global_forwarding_rule", "google_compute_backend_service", "google_compute_region_backend_service", "google_compute_backend_bucket", "google_compute_url_map", "google_compute_region_url_map", "google_compute_target_*", "google_compute_region_target_*", "google_compute_health_check", "google_compute_region_health_check", "google_compute_http_health_check", "google_compute_https_health_check", "google_compute_ssl_certificate", "google_compute_managed_ssl_certificate", "google_compute_region_ssl_certificate", "google_compute_ssl_policy", "google_compute_security_policy", "google_compute_network_endpoint_group", "google_compute_global_network_endpoint_group", "google_compute_region_network_endpoint_group", "google_certificate_manager_*"],
+      "sdk": []
+    },
+    {
+      "id": "gcp.storage",
+      "cloud": "gcp",
+      "service": "Cloud Storage",
+      "class": "portable",
+      "capability": "object-storage",
+      "replacement": "UpCloud Managed Object Storage, Scaleway Object Storage, Hetzner Object Storage, OVHcloud Object Storage (S3 API); code using the GCS client needs an S3 client",
+      "terraform": ["google_storage_*"],
+      "sdk": ["storage*"]
+    },
+    {
+      "id": "gcp.sql",
+      "cloud": "gcp",
+      "service": "Cloud SQL / AlloyDB",
+      "class": "portable",
+      "capability": "managed-postgres",
+      "replacement": "UpCloud Managed PostgreSQL / MySQL, Scaleway Managed Database for PostgreSQL / MySQL, OVHcloud Managed Databases for PostgreSQL / MySQL, or PostgreSQL / MySQL on Hetzner Cloud Servers",
+      "terraform": ["google_sql_*", "google_alloydb_*"],
+      "sdk": ["sql*", "cloudsql*", "alloydb*"]
+    },
+    {
+      "id": "gcp.memorystore",
+      "cloud": "gcp",
+      "service": "Memorystore",
+      "class": "portable",
+      "capability": "redis",
+      "replacement": "UpCloud Managed Valkey, Scaleway Managed Redis, OVHcloud Managed Databases for Caching, or Valkey on Hetzner Cloud Servers",
+      "terraform": ["google_redis_*", "google_memcache_*", "google_memorystore_*"],
+      "sdk": ["redis*", "memcache*", "memorystore*"]
+    },
+    {
+      "id": "gcp.gke",
+      "cloud": "gcp",
+      "service": "GKE",
+      "class": "portable",
+      "capability": "kubernetes",
+      "replacement": "UpCloud Managed Kubernetes, Scaleway Kubernetes Kapsule, OVHcloud Managed Kubernetes Service, or self-managed Kubernetes on Hetzner Cloud Servers",
+      "terraform": ["google_container_*", "google_gke_*"],
+      "sdk": ["container*", "gkehub*"]
+    },
+    {
+      "id": "gcp.artifact-registry",
+      "cloud": "gcp",
+      "service": "Artifact Registry",
+      "class": "portable",
+      "replacement": "Any OCI registry: Harbor, or the target cloud's container registry",
+      "terraform": ["google_artifact_registry_*", "google_container_registry"],
+      "sdk": ["artifactregistry*"]
+    },
+    {
+      "id": "gcp.dns",
+      "cloud": "gcp",
+      "service": "Cloud DNS",
+      "class": "portable",
+      "capability": "dns",
+      "replacement": "Scaleway Domains and DNS, Hetzner DNS, OVHcloud DNS, or another EU DNS provider; zone export and import",
+      "terraform": ["google_dns_*"],
+      "sdk": ["dns"]
+    },
+    {
+      "id": "gcp.filestore",
+      "cloud": "gcp",
+      "service": "Filestore",
+      "class": "portable",
+      "replacement": "NFS on servers, or the target cloud's file storage",
+      "terraform": ["google_filestore_*"],
+      "sdk": ["filestore*"]
+    },
+    {
+      "id": "gcp.pubsub",
+      "cloud": "gcp",
+      "service": "Pub/Sub",
+      "class": "moderate",
+      "capability": "queues",
+      "replacement": "NATS or RabbitMQ on servers, or OVHcloud Managed Kafka; subscriptions and push endpoints need porting",
+      "terraform": ["google_pubsub_*"],
+      "sdk": ["pubsub*"]
+    },
+    {
+      "id": "gcp.tasks",
+      "cloud": "gcp",
+      "service": "Cloud Tasks / Cloud Scheduler / Eventarc",
+      "class": "moderate",
+      "capability": "queues",
+      "replacement": "A job queue on NATS or RabbitMQ, Kubernetes CronJobs for schedules",
+      "terraform": ["google_cloud_tasks_*", "google_cloud_scheduler_*", "google_eventarc_*", "google_workflows_*"],
+      "sdk": ["tasks*", "scheduler*", "eventarc*", "workflows*"]
+    },
+    {
+      "id": "gcp.run",
+      "cloud": "gcp",
+      "service": "Cloud Run",
+      "class": "moderate",
+      "capability": "functions",
+      "replacement": "Containers on Kubernetes (Knative-compatible), or Scaleway Serverless Functions / Containers",
+      "terraform": ["google_cloud_run_*", "google_cloud_run_v2_*"],
+      "sdk": ["run*"]
+    },
+    {
+      "id": "gcp.secretmanager",
+      "cloud": "gcp",
+      "service": "Secret Manager",
+      "class": "moderate",
+      "replacement": "OpenBao or HashiCorp Vault, or Kubernetes Secrets with External Secrets or SOPS",
+      "terraform": ["google_secret_manager_*"],
+      "sdk": ["secretmanager*"]
+    },
+    {
+      "id": "gcp.kms",
+      "cloud": "gcp",
+      "service": "Cloud KMS",
+      "class": "moderate",
+      "replacement": "OpenBao or Vault Transit, or the target cloud's key management; data encrypted with KMS keys must be re-encrypted",
+      "terraform": ["google_kms_*"],
+      "sdk": ["kms*"]
+    },
+    {
+      "id": "gcp.observability",
+      "cloud": "gcp",
+      "service": "Cloud Logging / Monitoring / Trace",
+      "class": "moderate",
+      "replacement": "Prometheus, Grafana and Loki, or OpenTelemetry to any backend",
+      "terraform": ["google_logging_*", "google_monitoring_*"],
+      "sdk": ["logging*", "monitoring*", "trace*", "errorreporting*", "profiler*", "opentelemetry*", "debugagent"]
+    },
+    {
+      "id": "gcp.identity",
+      "cloud": "gcp",
+      "service": "Identity Platform / IAP",
+      "class": "moderate",
+      "replacement": "Keycloak or another OIDC provider, and an auth proxy (oauth2-proxy) in front of apps",
+      "terraform": ["google_identity_platform_*", "google_iap_*"],
+      "sdk": ["identitytoolkit*", "iap*"]
+    },
+    {
+      "id": "gcp.dataflow",
+      "cloud": "gcp",
+      "service": "Dataflow / Dataproc / Composer",
+      "class": "moderate",
+      "replacement": "Apache Beam on Flink, Spark, or Airflow on Kubernetes",
+      "terraform": ["google_dataflow_*", "google_dataproc_*", "google_composer_*"],
+      "sdk": ["dataflow*", "dataproc*", "orchestration*"]
+    },
+    {
+      "id": "gcp.cloudbuild",
+      "cloud": "gcp",
+      "service": "Cloud Build / Cloud Deploy",
+      "class": "moderate",
+      "replacement": "GitHub Actions, GitLab CI or Forgejo Actions with self-hosted runners",
+      "terraform": ["google_cloudbuild_*", "google_cloudbuildv2_*", "google_clouddeploy_*"],
+      "sdk": ["cloudbuild*", "deploy*"]
+    },
+    {
+      "id": "gcp.apigateway",
+      "cloud": "gcp",
+      "service": "API Gateway / Apigee / Endpoints",
+      "class": "moderate",
+      "replacement": "An ingress controller or API gateway on Kubernetes (Traefik, Kong, NGINX)",
+      "terraform": ["google_api_gateway_*", "google_apigee_*", "google_endpoints_*"],
+      "sdk": ["apigateway*", "apigee*"]
+    },
+    {
+      "id": "gcp.functions",
+      "cloud": "gcp",
+      "service": "Cloud Functions",
+      "class": "hard",
+      "capability": "functions",
+      "replacement": "Containers on Kubernetes, or Scaleway Serverless Functions / Containers; handlers and triggers need repackaging",
+      "terraform": ["google_cloudfunctions_*", "google_cloudfunctions2_*"],
+      "sdk": ["functions*"]
+    },
+    {
+      "id": "gcp.appengine",
+      "cloud": "gcp",
+      "service": "App Engine",
+      "class": "hard",
+      "replacement": "Containers on Kubernetes; App Engine bundled services (Datastore, Memcache, Task Queues) need replacing",
+      "terraform": ["google_app_engine_*"],
+      "sdk": ["appengine*"]
+    },
+    {
+      "id": "gcp.firestore",
+      "cloud": "gcp",
+      "service": "Firestore / Datastore",
+      "class": "hard",
+      "capability": "nosql",
+      "replacement": "No direct equivalent. Redesign on PostgreSQL (JSONB) or a document database you run",
+      "terraform": ["google_firestore_*", "google_datastore_*", "google_firebase_database_*"],
+      "sdk": ["firestore*", "datastore*", "ndb"]
+    },
+    {
+      "id": "gcp.bigtable",
+      "cloud": "gcp",
+      "service": "Bigtable",
+      "class": "hard",
+      "capability": "nosql",
+      "replacement": "No direct equivalent. Cassandra, ScyllaDB or HBase you run; schema and access patterns need redesign",
+      "terraform": ["google_bigtable_*"],
+      "sdk": ["bigtable*"]
+    },
+    {
+      "id": "gcp.spanner",
+      "cloud": "gcp",
+      "service": "Spanner",
+      "class": "hard",
+      "replacement": "PostgreSQL, or CockroachDB / YugabyteDB if you need a distributed database; schema and queries need porting",
+      "terraform": ["google_spanner_*"],
+      "sdk": ["spanner*"]
+    },
+    {
+      "id": "gcp.bigquery",
+      "cloud": "gcp",
+      "service": "BigQuery",
+      "class": "hard",
+      "capability": "warehouse",
+      "replacement": "No direct equivalent. A warehouse you run (e.g. ClickHouse); SQL dialect and loaders need porting",
+      "terraform": ["google_bigquery_*"],
+      "sdk": ["bigquery*"]
+    },
+    {
+      "id": "gcp.vertex",
+      "cloud": "gcp",
+      "service": "Vertex AI / AI APIs",
+      "class": "hard",
+      "replacement": "An EU-hosted model API or open-weight models you serve (vLLM); pipelines and endpoints need porting",
+      "terraform": ["google_vertex_ai_*", "google_ml_engine_*", "google_document_ai_*", "google_dialogflow_*"],
+      "sdk": ["aiplatform*", "vertexai*", "vision*", "speech*", "texttospeech*", "translate*", "language*", "documentai*", "dialogflow*", "videointelligence*"]
+    },
+
+    {
+      "id": "azure.network-iam",
+      "group": true,
+      "cloud": "azure",
+      "service": "Networking & IAM",
+      "class": "portable",
+      "capability": "networking",
+      "replacement": "UpCloud SDN private networks, Scaleway VPC and Private Networks, Hetzner Networks and Firewalls, OVHcloud vRack private networks; IAM becomes API tokens and RBAC",
+      "terraform": ["azurerm_resource_group", "azurerm_resource_group_*", "azurerm_virtual_network", "azurerm_virtual_network_*", "azurerm_subnet", "azurerm_subnet_*", "azurerm_network_security_group", "azurerm_network_security_rule", "azurerm_network_interface", "azurerm_network_interface_*", "azurerm_public_ip", "azurerm_public_ip_*", "azurerm_route_table", "azurerm_route", "azurerm_nat_gateway", "azurerm_nat_gateway_*", "azurerm_private_endpoint", "azurerm_private_dns_*", "azurerm_virtual_network_gateway*", "azurerm_local_network_gateway", "azurerm_role_*", "azurerm_user_assigned_identity", "azurerm_federated_identity_credential", "azurerm_client_config", "azurerm_subscription", "azurerm_subscriptions", "azurerm_management_group*", "azurerm_policy_*", "azurerm_management_lock", "azuread_*"],
+      "sdk": ["core*", "identity*", "msal*", "msrest*", "common", "abortcontroller", "logger", "mgmtcore", "mgmtresource*", "mgmtnetwork*", "mgmtauthorization*", "mgmtmsi", "mgmtsubscription*"]
+    },
+    {
+      "id": "azure.vm",
+      "cloud": "azure",
+      "service": "Virtual Machines",
+      "class": "portable",
+      "capability": "compute",
+      "replacement": "UpCloud Cloud Servers, Scaleway Instances, Hetzner Cloud Servers, OVHcloud Public Cloud Instances",
+      "terraform": ["azurerm_virtual_machine", "azurerm_virtual_machine_*", "azurerm_linux_virtual_machine*", "azurerm_windows_virtual_machine*", "azurerm_orchestrated_virtual_machine_scale_set", "azurerm_managed_disk", "azurerm_availability_set", "azurerm_image", "azurerm_shared_image*", "azurerm_ssh_public_key", "azurerm_snapshot"],
+      "sdk": ["mgmtcompute*"]
+    },
+    {
+      "id": "azure.storage",
+      "cloud": "azure",
+      "service": "Blob Storage",
+      "class": "portable",
+      "capability": "object-storage",
+      "replacement": "UpCloud Managed Object Storage, Scaleway Object Storage, Hetzner Object Storage, OVHcloud Object Storage (S3 API); code using the Blob API needs an S3 client",
+      "terraform": ["azurerm_storage_*"],
+      "sdk": ["storage*", "blob*", "datalake*", "file*", "mgmtstorage*"]
+    },
+    {
+      "id": "azure.postgres",
+      "cloud": "azure",
+      "service": "Azure Database for PostgreSQL / MySQL",
+      "class": "portable",
+      "capability": "managed-postgres",
+      "replacement": "UpCloud Managed PostgreSQL / MySQL, Scaleway Managed Database for PostgreSQL / MySQL, OVHcloud Managed Databases for PostgreSQL / MySQL, or PostgreSQL / MySQL on Hetzner Cloud Servers",
+      "terraform": ["azurerm_postgresql_*", "azurerm_mysql_*", "azurerm_mariadb_*"],
+      "sdk": ["mgmtpostgresql*", "mgmtmysql*", "mgmtrdbms*"]
+    },
+    {
+      "id": "azure.redis",
+      "cloud": "azure",
+      "service": "Azure Cache for Redis",
+      "class": "portable",
+      "capability": "redis",
+      "replacement": "UpCloud Managed Valkey, Scaleway Managed Redis, OVHcloud Managed Databases for Caching, or Valkey on Hetzner Cloud Servers",
+      "terraform": ["azurerm_redis_*", "azurerm_managed_redis*"],
+      "sdk": ["mgmtredis*"]
+    },
+    {
+      "id": "azure.aks",
+      "cloud": "azure",
+      "service": "AKS",
+      "class": "portable",
+      "capability": "kubernetes",
+      "replacement": "UpCloud Managed Kubernetes, Scaleway Kubernetes Kapsule, OVHcloud Managed Kubernetes Service, or self-managed Kubernetes on Hetzner Cloud Servers",
+      "terraform": ["azurerm_kubernetes_*"],
+      "sdk": ["mgmtcontainerservice*"]
+    },
+    {
+      "id": "azure.lb",
+      "cloud": "azure",
+      "service": "Load Balancer / Application Gateway",
+      "class": "portable",
+      "capability": "load-balancer",
+      "replacement": "UpCloud Managed Load Balancer, Scaleway Load Balancer, Hetzner Load Balancer, OVHcloud Public Cloud Load Balancer",
+      "terraform": ["azurerm_lb", "azurerm_lb_*", "azurerm_application_gateway", "azurerm_web_application_firewall_policy"],
+      "sdk": []
+    },
+    {
+      "id": "azure.dns",
+      "cloud": "azure",
+      "service": "Azure DNS / Traffic Manager",
+      "class": "portable",
+      "capability": "dns",
+      "replacement": "Scaleway Domains and DNS, Hetzner DNS, OVHcloud DNS, or another EU DNS provider; zone export and import",
+      "terraform": ["azurerm_dns_*", "azurerm_traffic_manager_*"],
+      "sdk": ["mgmtdns*", "mgmttrafficmanager*"]
+    },
+    {
+      "id": "azure.acr",
+      "cloud": "azure",
+      "service": "Container Registry",
+      "class": "portable",
+      "replacement": "Any OCI registry: Harbor, or the target cloud's container registry",
+      "terraform": ["azurerm_container_registry*"],
+      "sdk": ["containerregistry*", "mgmtcontainerregistry*"]
+    },
+    {
+      "id": "azure.sql",
+      "cloud": "azure",
+      "service": "Azure SQL Database",
+      "class": "moderate",
+      "replacement": "SQL Server on servers (licence needed), or a move to PostgreSQL",
+      "terraform": ["azurerm_mssql_*", "azurerm_sql_*"],
+      "sdk": ["mgmtsql*"]
+    },
+    {
+      "id": "azure.servicebus",
+      "cloud": "azure",
+      "service": "Service Bus / Storage Queues / Event Grid",
+      "class": "moderate",
+      "capability": "queues",
+      "replacement": "NATS or RabbitMQ on servers (RabbitMQ also speaks AMQP 1.0), or OVHcloud Managed Kafka",
+      "terraform": ["azurerm_servicebus_*", "azurerm_storage_queue", "azurerm_eventgrid_*"],
+      "sdk": ["servicebus*", "storagequeue*", "queue*", "eventgrid*", "mgmtservicebus*", "mgmteventgrid*"]
+    },
+    {
+      "id": "azure.eventhubs",
+      "cloud": "azure",
+      "service": "Event Hubs",
+      "class": "moderate",
+      "capability": "queues",
+      "replacement": "Kafka (Event Hubs has a Kafka-compatible endpoint): OVHcloud Managed Kafka, or Kafka / Redpanda you run",
+      "terraform": ["azurerm_eventhub*"],
+      "sdk": ["eventhub*", "mgmteventhub*"]
+    },
+    {
+      "id": "azure.keyvault",
+      "cloud": "azure",
+      "service": "Key Vault / App Configuration",
+      "class": "moderate",
+      "replacement": "OpenBao or HashiCorp Vault, or Kubernetes Secrets with External Secrets or SOPS",
+      "terraform": ["azurerm_key_vault*", "azurerm_app_configuration*"],
+      "sdk": ["keyvault*", "secrets*", "keys*", "certificates*", "appconfiguration*", "mgmtkeyvault*"]
+    },
+    {
+      "id": "azure.monitor",
+      "cloud": "azure",
+      "service": "Azure Monitor / Application Insights",
+      "class": "moderate",
+      "replacement": "Prometheus, Grafana and Loki, or OpenTelemetry to any backend",
+      "terraform": ["azurerm_monitor_*", "azurerm_application_insights*", "azurerm_log_analytics_*"],
+      "sdk": ["monitor*", "applicationinsights*", "mgmtmonitor*"]
+    },
+    {
+      "id": "azure.cdn",
+      "cloud": "azure",
+      "service": "Front Door / CDN",
+      "class": "moderate",
+      "replacement": "An EU CDN or a caching proxy (Varnish, NGINX); rules engine configuration needs rewriting",
+      "terraform": ["azurerm_cdn_*", "azurerm_frontdoor*"],
+      "sdk": ["mgmtcdn*", "mgmtfrontdoor*"]
+    },
+    {
+      "id": "azure.b2c",
+      "cloud": "azure",
+      "service": "Azure AD B2C",
+      "class": "moderate",
+      "replacement": "Keycloak or another OIDC provider; plan a password migration on login",
+      "terraform": ["azurerm_aadb2c_*"],
+      "sdk": []
+    },
+    {
+      "id": "azure.appservice",
+      "cloud": "azure",
+      "service": "App Service / Container Apps / Container Instances",
+      "class": "moderate",
+      "replacement": "Containers on Kubernetes or on servers; app settings and slots need rewriting",
+      "terraform": ["azurerm_app_service*", "azurerm_service_plan", "azurerm_linux_web_app*", "azurerm_windows_web_app*", "azurerm_container_app*", "azurerm_container_group", "azurerm_static_web_app*", "azurerm_static_site*"],
+      "sdk": ["mgmtappservice*", "mgmtweb*", "mgmtappcontainers*", "mgmtcontainerinstance*"]
+    },
+    {
+      "id": "azure.apim",
+      "cloud": "azure",
+      "service": "API Management",
+      "class": "moderate",
+      "replacement": "An ingress controller or API gateway on Kubernetes (Traefik, Kong, NGINX); policies need rewriting",
+      "terraform": ["azurerm_api_management*"],
+      "sdk": ["mgmtapimanagement*"]
+    },
+    {
+      "id": "azure.backup",
+      "cloud": "azure",
+      "service": "Backup / Recovery Services",
+      "class": "moderate",
+      "replacement": "Velero, restic, or the target cloud's snapshots and backups",
+      "terraform": ["azurerm_backup_*", "azurerm_recovery_services_*", "azurerm_data_protection_*", "azurerm_site_recovery_*"],
+      "sdk": ["mgmtrecoveryservices*"]
+    },
+    {
+      "id": "azure.functions",
+      "cloud": "azure",
+      "service": "Azure Functions",
+      "class": "hard",
+      "capability": "functions",
+      "replacement": "Containers on Kubernetes, or Scaleway Serverless Functions / Containers; bindings and triggers need repackaging",
+      "terraform": ["azurerm_function_app*", "azurerm_linux_function_app*", "azurerm_windows_function_app*"],
+      "sdk": ["functions*", "durablefunctions*"]
+    },
+    {
+      "id": "azure.logicapps",
+      "cloud": "azure",
+      "service": "Logic Apps",
+      "class": "hard",
+      "replacement": "A workflow engine such as Temporal, Argo Workflows or n8n; workflows need a rewrite",
+      "terraform": ["azurerm_logic_app_*"],
+      "sdk": ["mgmtlogic*"]
+    },
+    {
+      "id": "azure.cosmos",
+      "cloud": "azure",
+      "service": "Cosmos DB / Table Storage",
+      "class": "hard",
+      "capability": "nosql",
+      "replacement": "No direct equivalent. PostgreSQL (JSONB), or MongoDB / Cassandra you run if you use those APIs",
+      "terraform": ["azurerm_cosmosdb_*", "azurerm_storage_table", "azurerm_storage_table_*"],
+      "sdk": ["cosmos*", "datatables*", "tables*", "mgmtcosmosdb*"]
+    },
+    {
+      "id": "azure.synapse",
+      "cloud": "azure",
+      "service": "Synapse Analytics / Data Factory",
+      "class": "hard",
+      "capability": "warehouse",
+      "replacement": "No direct equivalent. A warehouse you run (e.g. ClickHouse) and Airflow for pipelines",
+      "terraform": ["azurerm_synapse_*", "azurerm_data_factory*"],
+      "sdk": ["synapse*", "mgmtsynapse*", "mgmtdatafactory*"]
+    },
+    {
+      "id": "azure.ai",
+      "cloud": "azure",
+      "service": "Azure OpenAI / AI services / AI Search",
+      "class": "hard",
+      "replacement": "An EU-hosted model API or open-weight models you serve (vLLM); OpenSearch for search",
+      "terraform": ["azurerm_cognitive_*", "azurerm_ai_*", "azurerm_machine_learning_*", "azurerm_search_service"],
+      "sdk": ["openai", "ai*", "cognitiveservices*", "search*", "mgmtcognitiveservices*", "mgmtsearch*", "mgmtmachinelearning*"]
+    },
+
+    {
+      "id": "digitalocean.network",
+      "group": true,
+      "cloud": "digitalocean",
+      "service": "Networking & projects",
+      "class": "portable",
+      "capability": "networking",
+      "replacement": "UpCloud SDN private networks, Scaleway VPC and Private Networks, Hetzner Networks and Firewalls, OVHcloud vRack private networks",
+      "terraform": ["digitalocean_vpc", "digitalocean_vpc_*", "digitalocean_firewall", "digitalocean_reserved_ip*", "digitalocean_floating_ip*", "digitalocean_project", "digitalocean_project_*", "digitalocean_projects", "digitalocean_ssh_key", "digitalocean_ssh_keys", "digitalocean_tag", "digitalocean_tags", "digitalocean_account", "digitalocean_region", "digitalocean_regions", "digitalocean_sizes"]
+    },
+    {
+      "id": "digitalocean.droplet",
+      "cloud": "digitalocean",
+      "service": "Droplets",
+      "class": "portable",
+      "capability": "compute",
+      "replacement": "UpCloud Cloud Servers, Scaleway Instances, Hetzner Cloud Servers, OVHcloud Public Cloud Instances",
+      "terraform": ["digitalocean_droplet", "digitalocean_droplet_*", "digitalocean_droplets", "digitalocean_volume", "digitalocean_volume_*", "digitalocean_image", "digitalocean_images", "digitalocean_custom_image"]
+    },
+    {
+      "id": "digitalocean.spaces",
+      "cloud": "digitalocean",
+      "service": "Spaces",
+      "class": "portable",
+      "capability": "object-storage",
+      "replacement": "UpCloud Managed Object Storage, Scaleway Object Storage, Hetzner Object Storage, OVHcloud Object Storage (S3 API)",
+      "terraform": ["digitalocean_spaces_*"]
+    },
+    {
+      "id": "digitalocean.database",
+      "cloud": "digitalocean",
+      "service": "Managed Databases",
+      "class": "portable",
+      "capability": "managed-postgres",
+      "replacement": "UpCloud Managed PostgreSQL / MySQL, Scaleway Managed Database for PostgreSQL / MySQL, OVHcloud Managed Databases for PostgreSQL / MySQL, or PostgreSQL / MySQL on Hetzner Cloud Servers",
+      "terraform": ["digitalocean_database_*"]
+    },
+    {
+      "id": "digitalocean.cache",
+      "cloud": "digitalocean",
+      "service": "Managed Caching",
+      "class": "portable",
+      "capability": "redis",
+      "replacement": "UpCloud Managed Valkey, Scaleway Managed Redis, OVHcloud Managed Databases for Caching, or Valkey on Hetzner Cloud Servers",
+      "terraform": ["digitalocean_database_cluster"],
+      "terraform_body": ["engine\\s*=\\s*\"(redis|valkey)\""]
+    },
+    {
+      "id": "digitalocean.kubernetes",
+      "cloud": "digitalocean",
+      "service": "DigitalOcean Kubernetes (DOKS)",
+      "class": "portable",
+      "capability": "kubernetes",
+      "replacement": "UpCloud Managed Kubernetes, Scaleway Kubernetes Kapsule, OVHcloud Managed Kubernetes Service, or self-managed Kubernetes on Hetzner Cloud Servers",
+      "terraform": ["digitalocean_kubernetes_*"]
+    },
+    {
+      "id": "digitalocean.lb",
+      "cloud": "digitalocean",
+      "service": "Load Balancers",
+      "class": "portable",
+      "capability": "load-balancer",
+      "replacement": "UpCloud Managed Load Balancer, Scaleway Load Balancer, Hetzner Load Balancer, OVHcloud Public Cloud Load Balancer",
+      "terraform": ["digitalocean_loadbalancer", "digitalocean_certificate"]
+    },
+    {
+      "id": "digitalocean.dns",
+      "cloud": "digitalocean",
+      "service": "DNS",
+      "class": "portable",
+      "capability": "dns",
+      "replacement": "Scaleway Domains and DNS, Hetzner DNS, OVHcloud DNS, or another EU DNS provider; zone export and import",
+      "terraform": ["digitalocean_domain", "digitalocean_domains", "digitalocean_record", "digitalocean_records"]
+    },
+    {
+      "id": "digitalocean.registry",
+      "cloud": "digitalocean",
+      "service": "Container Registry",
+      "class": "portable",
+      "replacement": "Any OCI registry: Harbor, or the target cloud's container registry",
+      "terraform": ["digitalocean_container_registry*"]
+    },
+    {
+      "id": "digitalocean.cdn",
+      "cloud": "digitalocean",
+      "service": "Spaces CDN",
+      "class": "moderate",
+      "replacement": "An EU CDN or a caching proxy (Varnish, NGINX)",
+      "terraform": ["digitalocean_cdn"]
+    },
+    {
+      "id": "digitalocean.app",
+      "cloud": "digitalocean",
+      "service": "App Platform",
+      "class": "moderate",
+      "replacement": "Containers on Kubernetes or on servers; the app spec needs rewriting",
+      "terraform": ["digitalocean_app", "digitalocean_app_*"]
+    },
+    {
+      "id": "digitalocean.monitoring",
+      "cloud": "digitalocean",
+      "service": "Monitoring and uptime checks",
+      "class": "moderate",
+      "replacement": "Prometheus, Grafana and Alertmanager, or an EU uptime service",
+      "terraform": ["digitalocean_monitor_alert", "digitalocean_uptime_*"]
+    }
+  ]
+}

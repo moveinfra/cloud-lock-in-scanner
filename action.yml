@@ -1,0 +1,100 @@
+name: EU cloud lock-in scanner
+description: Find cloud services that are hard to move off AWS, Google Cloud, Azure or DigitalOcean, with an EU-portability score.
+author: MoveInfra
+branding:
+  icon: cloud
+  color: blue
+
+inputs:
+  path:
+    description: Directory to scan, relative to the workspace.
+    default: "."
+  fail-under:
+    description: Fail the step when the score is below this number (0-100). Empty means never fail.
+    default: ""
+  badge:
+    description: Write a shields.io endpoint badge JSON to this path. Empty means no badge.
+    default: ""
+  version:
+    description: >-
+      Release of the scanner to download, e.g. v0.1.0. Empty means the version the action is used at
+      (uses: moveinfra/cloud-lock-in-scanner@v0.1.0), or the latest release when that is a branch or a commit.
+    default: ""
+
+outputs:
+  score:
+    description: EU-portability score, 0-100. Empty when nothing cloud-specific was found.
+    value: ${{ steps.scan.outputs.score }}
+  report:
+    description: Path of the JSON report.
+    value: ${{ steps.scan.outputs.report }}
+  markdown:
+    description: Path of the Markdown report (the same text as the job summary), e.g. for a pull request comment.
+    value: ${{ steps.scan.outputs.markdown }}
+
+runs:
+  using: composite
+  steps:
+    - id: install
+      shell: bash
+      env:
+        REPO: moveinfra/cloud-lock-in-scanner
+        ACTION_REF: ${{ github.action_ref }}
+        INPUT_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        version="$INPUT_VERSION"
+        ref="${ACTION_REF:-${GITHUB_ACTION_REF:-}}"
+        if [ -z "$version" ] && [[ "$ref" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          version="$ref"
+        fi
+        if [ -z "$version" ]; then
+          latest=$(curl -fsSLI -o /dev/null -w '%{url_effective}' "https://github.com/$REPO/releases/latest")
+          version="${latest##*/}"
+        fi
+        case "$RUNNER_OS" in
+          Linux) os=linux ;; macOS) os=darwin ;; Windows) os=windows ;;
+          *) echo "::error::unsupported runner OS $RUNNER_OS"; exit 1 ;;
+        esac
+        case "$RUNNER_ARCH" in
+          X64) arch=amd64 ;; ARM64) arch=arm64 ;;
+          *) echo "::error::unsupported runner architecture $RUNNER_ARCH"; exit 1 ;;
+        esac
+        asset="lockin_${version#v}_${os}_${arch}.tar.gz"
+        dir="$RUNNER_TEMP/lockin-$version"
+        mkdir -p "$dir"
+        cd "$dir"
+        base="https://github.com/$REPO/releases/download/$version"
+        curl -fsSLO "$base/$asset"
+        curl -fsSLO "$base/checksums.txt"
+        grep " $asset\$" checksums.txt > expected.txt || { echo "::error::$asset is not in checksums.txt"; exit 1; }
+        if command -v sha256sum >/dev/null; then sha256sum -c expected.txt; else shasum -a 256 -c expected.txt; fi
+        tar -xzf "$asset"
+        bin="$dir/lockin"
+        [ "$os" = windows ] && bin="$bin.exe"
+        echo "bin=$bin" >> "$GITHUB_OUTPUT"
+        echo "Using cloud-lock-in-scanner $version ($os/$arch)"
+
+    - id: scan
+      shell: bash
+      env:
+        BIN: ${{ steps.install.outputs.bin }}
+        SCAN_PATH: ${{ inputs.path }}
+        FAIL_UNDER: ${{ inputs.fail-under }}
+        BADGE: ${{ inputs.badge }}
+      run: |
+        set -uo pipefail
+        report="$RUNNER_TEMP/lockin-report.json"
+        md="$RUNNER_TEMP/lockin-report.md"
+        args=(--json "$report" --markdown "$md")
+        [ -n "$FAIL_UNDER" ] && args+=(--fail-under "$FAIL_UNDER")
+        [ -n "$BADGE" ] && args+=(--badge "$BADGE")
+        "$BIN" "${args[@]}" "$SCAN_PATH"
+        code=$?
+        [ -f "$md" ] && cat "$md" >> "$GITHUB_STEP_SUMMARY"
+        score=""
+        [ -f "$report" ] && score=$(sed -n 's/^  "score": \([0-9]*\),$/\1/p' "$report")
+        echo "score=$score" >> "$GITHUB_OUTPUT"
+        echo "report=$report" >> "$GITHUB_OUTPUT"
+        echo "markdown=$md" >> "$GITHUB_OUTPUT"
+        exit $code

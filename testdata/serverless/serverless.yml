@@ -1,0 +1,33 @@
+service: orders
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  region: eu-central-1
+
+functions:
+  create:
+    handler: handler.create
+    events:
+      - http:
+          path: orders
+          method: post
+  process:
+    handler: handler.process
+    events:
+      - sqs:
+          arn: !GetAtt OrdersQueue.Arn
+      - stream:
+          type: dynamodb
+          arn: !GetAtt OrdersTable.StreamArn
+  nightly:
+    handler: handler.nightly
+    events:
+      - schedule: rate(1 day)
+
+resources:
+  Resources:
+    OrdersTable:
+      Type: AWS::DynamoDB::Table
+    OrdersQueue:
+      Type: AWS::SQS::Queue

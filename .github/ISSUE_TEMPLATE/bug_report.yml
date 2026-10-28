@@ -1,0 +1,36 @@
+name: Bug report
+description: The scanner crashes, misreads a file, or a number looks wrong
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please do not paste a full report from a private repository: it lists your file paths.
+        Security issues: use Security → Report a vulnerability instead.
+  - type: input
+    id: version
+    attributes:
+      label: Scanner version
+      description: Output of `lockin --version`, or the version in `uses:`
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: input
+    id: how
+    attributes:
+      label: How you ran it
+      placeholder: "lockin --format markdown . (macOS arm64) / GitHub Action on ubuntu-latest"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: A small file that shows the problem
+      description: A few lines of Terraform, YAML or code are usually enough. Remove anything private.
+      render: text
